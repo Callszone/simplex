@@ -55,6 +55,52 @@ def ler_entrada(nomearquivo):
 
     return resultado
 
-x = ler_entrada("exemplo.txt")
-print(x)
+def converter_fpi(pl:dict):
+    # copio os elementos para facilitar a implementação e não alterar o arquivo base
+    A = pl["A"].copy()
+    b = pl["b"].copy()
+    relacoes = list(pl["relacoes"])
+
+    # todo b >=0 
+    for i, c in enumerate(b):
+        if c < 0:
+            b[i] = -b[i] 
+            A[i] = -A[i]
+
+            if relacoes[i] == "<=":
+                relacoes[i] = ">=" 
+            elif relacoes[i] == ">=":
+                relacoes[i] = "<="
+
+    # tratamento de sinais das variáveis
+    sinais  = pl["sinal"].copy()
+    z = pl["z"].copy()
+    colunas_A = []
+    c_fpi = []
+    mapeamento = []
+    col_id = 0
+    for i, c in enumerate(sinais):
+        if c == 1:
+            colunas_A.append(A[:,i])
+            c_fpi.append(z[i])
+            mapeamento.append(("pos", col_id))
+            col_id += 1
+        elif c == -1:
+            colunas_A.append(-A[:,i])
+            c_fpi.append(-z[i])
+            mapeamento.append(("neg", col_id))
+            col_id += 1
+        else:
+            colunas_A.append(A[:,i])
+            colunas_A.append(-A[:,i])
+            c_fpi.append(z[i])
+            c_fpi.append(-z[i])
+            pos = col_id
+            col_id += 1
+            neg = col_id
+            col_id += 1
+            mapeamento.append(("livre", pos, neg ))
+            
+
+
 
