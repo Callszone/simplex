@@ -100,7 +100,37 @@ def converter_fpi(pl:dict):
             neg = col_id
             col_id += 1
             mapeamento.append(("livre", pos, neg ))
+
+    #vou adicionar agora as variáveis de folga:
+    for i in range(len(relacoes)):
+        if(relacoes[i] == "<="):
+            col = np.zeros(pl["m"])
+            col[i] = 1
+            colunas_A.append(col)
+            c_fpi.append(0.0)
+        elif(relacoes[i] == ">="):
+            col = np.zeros(pl["m"])
+            col[i] = -1
+            colunas_A.append(col)
+            c_fpi.append(0.0)
+        
+    A_fpi = np.column_stack(colunas_A)
+    c_fpi = np.array(c_fpi, dtype=float)
+    b_fpi = b.copy()
+
+    return {
+        "A": A_fpi,
+        "b": b_fpi,
+        "c": c_fpi,
+        "mapeamento": mapeamento,
+        "relacoes": relacoes
+    }
             
 
-
+pl = ler_entrada("exemplo.txt")
+fpi = converter_fpi(pl)
+print("A_fpi: \n", fpi["A"])
+print("b_fpi:", fpi["b"])
+print("c_fpi: \n", fpi["c"])
+print("mapeamento: \n", fpi["mapeamento"])
 
